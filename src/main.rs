@@ -1,5 +1,7 @@
+use std::collections::HashMap;
+
 fn main() {
-    let nums_vec = Vec::from([3,3]);
+    let nums_vec = Vec::from([3, 2, 4]);
     let result = two_sum(nums_vec, 6);
 
     println!("{:?}", result);
@@ -31,23 +33,22 @@ fn length_of_last_word<T: AsRef<str>>(value: T) -> i32 {
     *len_vec.last().unwrap()
 }
 
-
-// time n^2
-// space
+// time n
+// space n
 fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut nums_map = std::collections::HashMap::<i32, i32>::new(); // 1
+    let mut res_vec: Vec<i32> = Vec::from([0, 0]); // 1
+
     for i in 0..nums.len() { // n
-        if nums[i] > target {
-            continue;
+        if nums_map.contains_key(&(target - nums[i])) { // 1
+            res_vec[0] = i as i32; // 1
+            res_vec[1] = *nums_map.get(&(target - nums[i])).unwrap(); // 1
+
+            return res_vec; // 1
         }
 
-        let current_index = i;
-        let current_num = nums[i];
-        for j in current_index + 1..nums.len() { // n-1 -> n*(n-1) -> n^2
-            if target - current_num == nums[j] {
-                return Vec::from([current_index as i32, j as i32]);
-            }
-        }
+        nums_map.insert(nums[i], i as i32); // 1
     }
 
-    Vec::from([0, 0])
+    res_vec
 }
