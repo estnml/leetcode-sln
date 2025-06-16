@@ -1,4 +1,6 @@
 from typing import List
+from math import e
+from ext import facOfNRec, facOfNIterative, powerOfNRec, powerOfNIterative
 
 
 class Solution:
@@ -31,11 +33,26 @@ class Solution:
             left += 1
             right -= 1
 
-    
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0:
+            return False
+
+        reverse = 0
+        xcopy = x
+
+        while x > 0:
+            reverse = (reverse * 10) + (x % 10)
+            x //= 10
+
+        return reverse == xcopy
+
 
 solver = Solution()
+# solver.lengthOfLastWord("   fly me   to   the moon  ")
+# solver.lengthOfLastWord("luffy is still joyboy")
+# solver.twoSum([2, 7, 11, 15], 9)
+# solver.reverseString(["H", "a", "n", "n", "a", "h"])
+# print(solver.isPalindrome(111))
 
-solver.lengthOfLastWord("   fly me   to   the moon  ")
-solver.lengthOfLastWord("luffy is still joyboy")
-solver.twoSum([2, 7, 11, 15], 9)
-solver.reverseString(["H","a","n","n","a","h"])
+result = powerOfNIterative(e, 3)
+print(result)
