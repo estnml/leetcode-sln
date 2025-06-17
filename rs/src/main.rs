@@ -24,44 +24,65 @@ impl ListNode {
 
 // TODO: add proper error handling & overflow controls
 impl Solution {
-    pub fn longest_palindrome(s: String) -> String {
-        // sliding window problemi gibi.
+    pub fn remove_elements_iterative(
+        head: Option<Box<ListNode>>,
+        val: i32,
+    ) -> Option<Box<ListNode>> {
+        let mut new_head_dummy = Some(Box::new(ListNode { val: 0, next: None }));
+        let mut tail_ptr = new_head_dummy.as_mut();
 
-        let mut longest_w_start = 0;
-        let mut longest_w_end = 0;
+        let mut current_node_ptr = head.as_ref();
 
-        let mut current_w_start = 0;
-        let mut current_w_end = 0; // ?
+        while let Some(node) = current_node_ptr {
+            if node.val != val {
+                let new_node = Some(Box::new(ListNode {
+                    val: node.val,
+                    next: None,
+                }));
 
-        for (idx, ch) in s.char_indices() {}
+                tail_ptr.as_mut().unwrap().next = new_node;
+                tail_ptr = tail_ptr.unwrap().next.as_mut();
+            }
+            current_node_ptr = node.next.as_ref();
+        }
 
-        todo!()
+        new_head_dummy.unwrap().next
     }
 
-    pub fn merge_two_lists_rec(
+    pub fn remove_elements(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
+        match (head) {
+            Some(node) => {
+                if node.val != val {
+                    Some(Box::new(ListNode {
+                        val: node.val,
+                        next: Solution::remove_elements(node.next, val),
+                    }))
+                } else {
+                    Solution::remove_elements(node.next, val)
+                }
+            }
+            None => None,
+        }
+    }
+
+    pub fn merge_two_lists(
         list1: Option<Box<ListNode>>,
         list2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
         match (list1, list2) {
             (None, None) => None,
-            (None, Some(l2_node)) => Some(Box::new(ListNode {
-                val: l2_node.val,
-                next: Solution::merge_two_lists_rec(l2_node.next, None),
-            })),
-            (Some(l1_node), None) => Some(Box::new(ListNode {
-                val: l1_node.val,
-                next: Solution::merge_two_lists_rec(l1_node.next, None),
-            })),
+            (None, Some(l2_node)) => Some(l2_node),
+            (Some(l1_node), None) => Some(l1_node),
             (Some(l1_node), Some(l2_node)) => {
                 if l1_node.val < l2_node.val {
                     Some(Box::new(ListNode {
                         val: l1_node.val,
-                        next: Solution::merge_two_lists_rec(l1_node.next, Some(l2_node)),
+                        next: Solution::merge_two_lists(l1_node.next, Some(l2_node)),
                     }))
                 } else {
                     Some(Box::new(ListNode {
                         val: l2_node.val,
-                        next: Solution::merge_two_lists_rec(Some(l1_node), l2_node.next),
+                        next: Solution::merge_two_lists(Some(l1_node), l2_node.next),
                     }))
                 }
             }
@@ -293,7 +314,19 @@ fn main() {
         val: 1,
         next: Some(Box::new(ListNode {
             val: 2,
-            next: Some(Box::new(ListNode { val: 4, next: None })),
+            next: Some(Box::new(ListNode {
+                val: 6,
+                next: Some(Box::new(ListNode {
+                    val: 3,
+                    next: Some(Box::new(ListNode {
+                        val: 4,
+                        next: Some(Box::new(ListNode {
+                            val: 5,
+                            next: Some(Box::new(ListNode { val: 6, next: None })),
+                        })),
+                    })),
+                })),
+            })),
         })),
     }));
     let list2 = Some(Box::new(ListNode {
@@ -303,7 +336,6 @@ fn main() {
             next: Some(Box::new(ListNode { val: 4, next: None })),
         })),
     }));
-    let mut result_list_head = Solution::merge_two_lists(list1, list2);
+    let mut result_list_head = Solution::remove_elements(list1, 6);
     println!("{:#?}", result_list_head);
-    // Solution::reverse_list(list1);
 }
