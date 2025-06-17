@@ -2,6 +2,7 @@ use core::num;
 use std::{
     collections::{HashMap, HashSet},
     ops::Deref,
+    result,
 };
 
 mod algorithms;
@@ -22,8 +23,59 @@ impl ListNode {
     }
 }
 
-// TODO: add proper error handling & overflow controls
+// TODO: turkce konus -> error ve overflow durumlarini kontrol et
 impl Solution {
+    pub fn is_power_of_two(n: i32) -> bool {
+        if n < 1 {
+            return false;
+        } else if n == 1 {
+            return true;
+        }
+        Solution::is_power_of_two(n / 2) && n % 2 == 0
+    }
+
+    pub fn is_power_of_two_iterative(n: i32) -> bool {
+        let mut copy_n = n;
+        let mut result = true;
+
+        if copy_n <= 0 {
+            return false;
+        }
+
+        while copy_n > 2 {
+            let quotient = copy_n / 2;
+            if !(quotient % 2 == 0 && copy_n % 2 == 0) {
+                result = false;
+                break;
+            }
+
+            copy_n /= 2;
+        }
+
+        result
+    }
+
+    pub fn reverse_list_iterative(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut current_node_ref = head;
+        let mut tail_ptr: Option<Box<ListNode>> = None;
+
+        while let Some(mut node) = current_node_ref.take() {
+            let next_node = node.next.take();
+            node.next = tail_ptr.take();
+            tail_ptr = Some(node);
+            current_node_ref = next_node;
+        }
+
+        tail_ptr
+    }
+
+    pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        match head {
+            Some(mut head_node) => None,
+            None => None,
+        }
+    }
+
     pub fn remove_elements_iterative(
         head: Option<Box<ListNode>>,
         val: i32,
@@ -141,17 +193,6 @@ impl Solution {
         }
 
         new_list_head.unwrap().next
-    }
-
-    pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        if head.is_none() {
-            return None;
-        }
-
-        let reversed = Solution::reverse_list(head.unwrap().next);
-        println!("reversed: {:?}", reversed.unwrap().val);
-
-        None
     }
 
     // time n
@@ -315,16 +356,10 @@ fn main() {
         next: Some(Box::new(ListNode {
             val: 2,
             next: Some(Box::new(ListNode {
-                val: 6,
+                val: 3,
                 next: Some(Box::new(ListNode {
-                    val: 3,
-                    next: Some(Box::new(ListNode {
-                        val: 4,
-                        next: Some(Box::new(ListNode {
-                            val: 5,
-                            next: Some(Box::new(ListNode { val: 6, next: None })),
-                        })),
-                    })),
+                    val: 4,
+                    next: Some(Box::new(ListNode { val: 5, next: None })),
                 })),
             })),
         })),
@@ -336,6 +371,7 @@ fn main() {
             next: Some(Box::new(ListNode { val: 4, next: None })),
         })),
     }));
-    let mut result_list_head = Solution::remove_elements(list1, 6);
-    println!("{:#?}", result_list_head);
+    // let mut result_list_head = Solution::reverse_list_iterative(list1);
+    let result = Solution::is_power_of_two(3);
+    println!("{:#?}", result);
 }
