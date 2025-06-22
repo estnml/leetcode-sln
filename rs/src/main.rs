@@ -25,6 +25,82 @@ impl ListNode {
 
 // TODO: turkce konus -> error ve overflow durumlarini kontrol et
 impl Solution {
+    // time
+    // space
+    pub fn fib(n: i32) -> i32 {
+        match n {
+            0 => 0,
+            1 => 1,
+            _ => Solution::fib(n - 1) + Solution::fib(n - 2),
+        }
+    }
+    pub fn fib_iterative(n: i32) -> i32 {
+        match n {
+            0 => 0,
+            1 => 1,
+            _ => {
+                let (mut n1, mut n2) = (0, 1);
+
+                let mut sum = 0;
+                let mut i = 2;
+
+                while i <= n {
+                    sum = n1 + n2;
+
+                    n1 = n2;
+                    n2 = sum;
+                    i += 1;
+                }
+
+                sum
+            }
+        }
+    }
+
+    // time 2n (n^2) possible
+    // space n
+    pub fn is_palindrome_iterative(head: Option<Box<ListNode>>) -> bool {
+        let mut is_palindrome = true;
+
+        if head.is_none() {
+            return false;
+        }
+
+        let mut numlist = Vec::<i32>::new();
+        let mut current = head;
+
+        loop {
+            match current.take() {
+                Some(node) => {
+                    numlist.push(node.val);
+                    current = node.next;
+                }
+                None => break,
+            }
+        }
+
+        let (mut i, mut j) = (0, numlist.len() - 1);
+
+        while i < j {
+            if numlist[i] != numlist[j] {
+                is_palindrome = false;
+                break;
+            }
+
+            i += 1;
+            j -= 1;
+        }
+
+        is_palindrome
+    }
+
+    pub fn is_palindrome(head: Option<Box<ListNode>>) -> bool {
+        match head {
+            Some(node) => true,
+            None => false,
+        }
+    }
+
     pub fn is_power_of_two(n: i32) -> bool {
         if n < 1 {
             return false;
@@ -56,23 +132,43 @@ impl Solution {
     }
 
     pub fn reverse_list_iterative(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        let mut current_node_ref = head;
+        if head.is_none() {
+            return None;
+        }
+
+        let mut current_node_ptr = head;
         let mut tail_ptr: Option<Box<ListNode>> = None;
 
-        while let Some(mut node) = current_node_ref.take() {
-            let next_node = node.next.take();
-            node.next = tail_ptr.take();
-            tail_ptr = Some(node);
-            current_node_ref = next_node;
+        loop {
+            let mut node = current_node_ptr.take();
+
+            match node {
+                Some(mut n) => {
+                    let next_node = std::mem::replace(&mut n.next, tail_ptr.take());
+                    tail_ptr = Some(n);
+                    current_node_ptr = next_node;
+                }
+                None => break,
+            }
         }
 
         tail_ptr
     }
 
+    // TODO
     pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        Solution::reverse_list_helper(head, None)
+    }
+
+    fn reverse_list_helper(
+        head: Option<Box<ListNode>>,
+        prev: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
         match head {
-            Some(mut head_node) => None,
-            None => None,
+            Some(mut node) => {
+                Solution::reverse_list_helper(std::mem::replace(&mut node.next, prev), Some(node))
+            }
+            None => prev,
         }
     }
 
@@ -309,19 +405,6 @@ impl Solution {
         *len_vec.last().unwrap()
     }
 
-    pub fn is_palindrome(x: i32) -> bool {
-        let mut xcopy = x;
-        let mut reverse = 0;
-        if x < 0 {
-            return false;
-        }
-        while xcopy > 0 {
-            reverse = (reverse * 10) + (xcopy % 10);
-            xcopy /= 10;
-        }
-        x == reverse
-    }
-
     // h e l l o
     pub fn reverse_string(s: &mut Vec<char>) {
         let (mut i, mut j) = (0 as usize, s.len() - 1);
@@ -371,7 +454,7 @@ fn main() {
             next: Some(Box::new(ListNode { val: 4, next: None })),
         })),
     }));
-    // let mut result_list_head = Solution::reverse_list_iterative(list1);
-    let result = Solution::is_power_of_two(3);
-    println!("{:#?}", result);
+    let mut result_list_head = Solution::reverse_list(list1);
+    // let result = Solution::is_power_of_two(3);
+    println!("{:#?}", result_list_head);
 }
