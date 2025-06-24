@@ -130,7 +130,6 @@ impl Solution {
 
         result
     }
-
     pub fn reverse_list_iterative(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
         if head.is_none() {
             return None;
