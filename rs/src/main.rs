@@ -456,4 +456,8 @@ fn main() {
     let mut result_list_head = Solution::reverse_list(list1);
     // let result = Solution::is_power_of_two(3);
     println!("{:#?}", result_list_head);
+
+    let x = Some("123431");
+
+    
 }

@@ -1,6 +1,14 @@
 struct Solution;
 
 impl Solution {
+    pub fn product_except_self(nums: Vec<i32>) -> Vec<i32> {
+        todo!()
+    }
+
+    pub fn increasing_triplet(nums: Vec<i32>) -> bool {
+        todo!()
+    }
+
     pub fn max_area(height: Vec<i32>) -> i32 {
         let mut current_area = 0;
         let mut result_max_area = 0;

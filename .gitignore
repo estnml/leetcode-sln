@@ -2,3 +2,4 @@ rs/target
 notlar
 .ropeproject
 /rs/src/recursion.rs
+.vscode
